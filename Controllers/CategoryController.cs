@@ -67,9 +67,13 @@ namespace BlogApi.Controllers
                 await context.SaveChangesAsync();
                 return Created($"v1/categories/{category.Id}", model);
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                return StatusCode(500, new ResultViewModel<Category>("5x06 - Erro interno do Servidor"));
+                return StatusCode(500, new ResultViewModel<Category>("05XE9 - Não foi possível incluir a categoria"));
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<Category>("05X10 - Falha interna no servidor"));
             }
         }
 
@@ -96,9 +100,13 @@ namespace BlogApi.Controllers
 
                 return Ok(model);
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                return StatusCode(500, new ResultViewModel<Category>("5x07 - Erro interno do Servidor"));
+                return StatusCode(500, new ResultViewModel<Category>("05XE8 - Não foi possível alterar a categoria"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultViewModel<Category>("05X11 - Falha interna no servidor"));
             }
         }
 
@@ -123,9 +131,13 @@ namespace BlogApi.Controllers
 
                 return Ok(new ResultViewModel<Category>("Categoria removida com sucesso!"));
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                return StatusCode(500, new ResultViewModel<Category>("5x08 - Erro interno do Servidor"));
+                return StatusCode(500, new ResultViewModel<Category>("05XE7 - Não foi possível excluir a categoria"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultViewModel<Category>("05X12 - Falha interna no servidor"));
             }
         }
     }
