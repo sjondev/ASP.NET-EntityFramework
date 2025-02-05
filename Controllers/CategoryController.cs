@@ -49,11 +49,6 @@ namespace BlogApi.Controllers
             [FromServices] DataContext context
         )
         {
-            // O asp.net ja faz isso por padrão o que ele faz é o seguinte.
-            // Verifica os campos que são requiridos caso eles não estejam presentes com valores
-            // ele retorna um BadRequest
-            if (ModelState.IsValid) return BadRequest();
-
             try
             {
                 var category = new Category
