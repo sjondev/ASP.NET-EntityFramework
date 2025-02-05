@@ -19,6 +19,14 @@ namespace BlogApi.Data.Mapping
                 .ValueGeneratedOnAdd()
                 .UseIdentityColumn();
 
+            // Title name
+            /*builder.Property(x => x.Title)
+                .IsRequired()
+                .HasMaxLength(40)
+                .HasColumnType("NVARCHAR")
+                .HasColumnName("Title");*/
+            
+
             // Propriedades
             builder.Property(x => x.LastUpdateDate)
                 .IsRequired()

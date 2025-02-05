@@ -147,6 +147,7 @@ C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.AssemblyInfoInputs.cache
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.AssemblyInfo.cs
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.csproj.CoreCompileInputs.cache
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.sourcelink.json
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\staticwebassets\msbuild.BlogApi.Microsoft.AspNetCore.StaticWebAssets.props
@@ -161,4 +162,3 @@ C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\refint\BlogApi.dll
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.pdb
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.genruntimeconfig.cache
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\ref\BlogApi.dll
-C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.sourcelink.json
