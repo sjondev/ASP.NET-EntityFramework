@@ -161,3 +161,4 @@ C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\refint\BlogApi.dll
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.pdb
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.genruntimeconfig.cache
 C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\ref\BlogApi.dll
+C:\Users\jonat\www\BlogApi\obj\Debug\net8.0\BlogApi.sourcelink.json

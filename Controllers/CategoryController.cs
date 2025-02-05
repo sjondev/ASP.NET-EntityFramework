@@ -1,4 +1,5 @@
 ﻿using BlogApi.Data;
+using BlogApi.Extensions;
 using BlogApi.Models;
 using BlogApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,11 @@ namespace BlogApi.Controllers
             try 
             {
                 var categoriesGet = await context.Categories.AsNoTracking().ToListAsync();
-                return Ok(categoriesGet);
+                return Ok(new ResultViewModel<List<Category>>(categoriesGet));
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Error Server:" + e.Message);
+                return StatusCode(500, new ResultViewModel<List<Category>>("5x04 - Falha interna no servidor"));
             }
         }
 
@@ -33,13 +34,15 @@ namespace BlogApi.Controllers
         {
             try
             {
-                var categoryId = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-                if (categoryId == null) return NotFound();
-                return Ok(categoryId);
+                var category = await context
+                    .Categories
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if (category == null) return NotFound(new ResultViewModel<Category>("Conteúdo não encontrado"));
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Error Server:" + e.Message);
+                return StatusCode(500, new ResultViewModel<Category>("5x05 - Falha interna no servidor"));
             }
         }
 
@@ -49,6 +52,9 @@ namespace BlogApi.Controllers
             [FromServices] DataContext context
         )
         {
+            if (!ModelState.IsValid) 
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
+
             try
             {
                 var category = new Category
@@ -63,7 +69,7 @@ namespace BlogApi.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Error Server:" + e.Message);
+                return StatusCode(500, new ResultViewModel<Category>("5x06 - Erro interno do Servidor"));
             }
         }
 
@@ -74,6 +80,9 @@ namespace BlogApi.Controllers
             [FromServices] DataContext context
         )
         {
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
+
             try
             {
                 var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
@@ -89,13 +98,13 @@ namespace BlogApi.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Error Server:" + e.Message);
+                return StatusCode(500, new ResultViewModel<Category>("5x07 - Erro interno do Servidor"));
             }
         }
 
 
 
-        [HttpDelete("v1/categorires/{id:int}")]
+        [HttpDelete("v1/categories/{id:int}")]
         public async Task<IActionResult> DeleteCategoryAsync(
             int id, 
             [FromServices] DataContext context
@@ -112,11 +121,11 @@ namespace BlogApi.Controllers
                 context.Categories.Remove(category);
                 await context.SaveChangesAsync();
 
-                return Ok("Category removed with success!");
+                return Ok(new ResultViewModel<Category>("Categoria removida com sucesso!"));
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Error Server:" + e.Message);
+                return StatusCode(500, new ResultViewModel<Category>("5x08 - Erro interno do Servidor"));
             }
         }
     }
