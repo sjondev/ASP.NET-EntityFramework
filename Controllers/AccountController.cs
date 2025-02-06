@@ -1,7 +1,12 @@
-﻿using BlogApi.Models;
+﻿using BlogApi.Data;
+using BlogApi.Extensions;
+using BlogApi.Models;
 using BlogApi.Services;
+using BlogApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SecureIdentity.Password;
 
 namespace BlogApi.Controllers;
 
@@ -14,26 +19,77 @@ public class AccountController : ControllerBase
     {
         _tokenServices = tokenServices;
     }
-    
-    [HttpPost("v1/login")]
-    public IActionResult Login([FromServices] TokenServices tokenServices)
+
+    [HttpPost("v1/accounts")]
+    public async Task<IActionResult> Post(
+        [FromServices] DataContext dataContext,
+        [FromBody] RegisterViewModel model)
     {
-        var token = tokenServices.GenereateToken(null);
-        return Ok(token);
+        if (!ModelState.IsValid)
+            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+        var user = new User
+        {
+            Name = model.Name,
+            Email = model.Email,
+            Slug = model.Email.Replace("@", "-").Replace(".", "-"),
+        };
+
+        var password = PasswordGenerator.Generate(length: 25);
+        user.PasswordHash = PasswordHasher.Hash(password);
+
+
+        try
+        {
+            await dataContext.Users.AddAsync(user);
+            await dataContext.SaveChangesAsync();
+
+            return Ok(new ResultViewModel<dynamic>(new
+            {
+                user = user.Email, 
+                password
+            }));
+        }
+        catch (DbUpdateException)
+        {
+            return BadRequest(new ResultViewModel<string>($"Email {model.Email} is invalid"));
+        }
+        catch
+        {
+            return StatusCode(500, new ResultViewModel<string>($"Error internal server."));
+        }
     }
     
-    [Authorize(Roles = "user")]
-    [HttpGet("v1/user")]
-    public IActionResult GetUser()
-        => Ok(User.Identity.Name);
     
-    [Authorize(Roles =  "author")] // -> pedi para o jwt token se tiver o author ele vai acessar o conteudo dele.
-    [HttpGet("v1/author")]
-    public IActionResult GetAuthor()
-        => Ok(User.Identity.Name);
-    
-    [Authorize(Roles = "admin")]
-    [HttpGet("v1/admin")]
-    public IActionResult GetAdmin()
-        => Ok(User.Identity.Name);
+    [HttpPost("v1/accounts/login")]
+    public async Task<IActionResult> Login(
+        [FromBody] LoginViewModel model,
+        [FromServices] DataContext dataContext,
+        [FromServices] TokenServices tokenServices
+    )
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+        
+        var user = await dataContext
+            .Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Email == model.Email);
+
+        if (user == null)
+            return StatusCode(401, new ResultViewModel<string>($"user or password is incorrect."));
+        
+        if (!PasswordHasher.Verify(user.PasswordHash, model.Password))
+            return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
+            
+        try
+        {
+            var token = tokenServices.GenereateToken(user);
+            return Ok(new ResultViewModel<string>(token, null));
+        }
+        catch
+        {
+            return StatusCode(500, new ResultViewModel<string>("05X04 - Falha interna no servidor"));
+        }
+    }
 }

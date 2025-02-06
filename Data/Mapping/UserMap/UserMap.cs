@@ -25,8 +25,8 @@ namespace BlogApi.Data.Mapping
             builder.Property(x => x.Email)
                    .IsRequired()
                    .HasColumnName("Email")
-                   .HasColumnType("NVARCHAR")
-                   .HasMaxLength(200);
+                   .HasColumnType("VARCHAR")
+                   .HasMaxLength(160);
             
             builder.Property(x => x.PasswordHash)
                    .IsRequired()
