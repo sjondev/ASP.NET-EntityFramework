@@ -74,13 +74,14 @@ public class AccountController : ControllerBase
         var user = await dataContext
             .Users
             .AsNoTracking()
+            .Include(x => x.Roles)
             .FirstOrDefaultAsync(x => x.Email == model.Email);
 
         if (user == null)
             return StatusCode(401, new ResultViewModel<string>($"user or password is incorrect."));
         
         if (!PasswordHasher.Verify(user.PasswordHash, model.Password))
-            return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
+            return StatusCode(401, new ResultViewModel<string>("user or password is incorrect."));
             
         try
         {

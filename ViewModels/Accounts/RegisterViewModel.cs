@@ -2,6 +2,7 @@
 
 namespace BlogApi.ViewModels;
 
+// essa classe serve para trabalhar com registro do usuário
 public class RegisterViewModel
 {
     [Required(ErrorMessage = "Username is required")]
