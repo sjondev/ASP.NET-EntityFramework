@@ -34,8 +34,20 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddTransient<TokenServices>();
 
 var app = builder.Build();
-
+LoadConfiguration(app);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+// Vai servir como uma conexão para enviar email.
+void LoadConfiguration(WebApplication app)
+{
+    Configuration.JwtKey = app.Configuration.GetValue<string>("JwtKey");
+    Configuration.ApiKeyName = app.Configuration.GetValue<string>("ApiKeyName");
+    Configuration.ApiKey = app.Configuration.GetValue<string>("ApiKey");
+
+    var smtp = new Configuration.SmtpConfiguration();
+    app.Configuration.GetSection("Smtp").Bind(smtp);
+    Configuration.Smtp = smtp;
+}
